@@ -12,15 +12,20 @@ if [[ -z "$CURL_PATH" ]]; then
   exit 1
 fi
 
-SYMFONY_LATEST_URL=$(curl -sSL https://api.github.com/repos/symfony/cli/releases/latest | grep '/symfony_linux_amd64"' | cut -d '"' -f 4)
+SYMFONY_LATEST_URL=$(curl -sSL https://api.github.com/repos/symfony-cli/symfony-cli/releases/latest | grep '/symfony-cli_linux_amd64.tar.gz"' | cut -d '"' -f 4)
 
-echo "Download symfony cli from: $SYMFONY_LATEST_URL"
+echo "Download symfony archive from: $SYMFONY_LATEST_URL"
 
 if [[ ! -d "/usr/local/bin" ]]; then
   mkdir -p /usr/local/bin
 fi
 
-curl -sSL "$SYMFONY_LATEST_URL" -o /usr/local/bin/symfony-cli
+curl -sSL "$SYMFONY_LATEST_URL" -o /tmp/symfony-cli_linux_amd64.tar.gz
+
+tar -z -x -C /tmp -f /tmp/symfony-cli_linux_amd64.tar.gz symfony
+
+mv /tmp/symfony /usr/local/bin/symfony-cli
+
 chmod 755 /usr/local/bin/symfony-cli
 
 symfony-cli -V
